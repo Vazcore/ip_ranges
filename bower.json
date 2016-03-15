@@ -1,0 +1,24 @@
+{
+  "name": "IP Range",
+  "authors": [
+    "Vazcore <vazcore@live.ru>"
+  ],
+  "description": "IP range constructor",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "ip"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  }
+}
