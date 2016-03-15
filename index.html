@@ -14,39 +14,40 @@
 			<div class="row">
 				<div class="col-xs-12 col-md-4 block_title">					
 					<span>IPs/IPranges to be imported</span>
-					<button> Import </button>
+					<button id="import_ips" class="btn btn-primary"> Import </button>
+					<input id="importing_file" type="file" class="hide">
 				</div>
 				<div class="col-xs-12 col-md-4 block_title">
 					<span>IPranges List</span>
-					<button> Import to PHP </button>
+					<button class="btn btn-primary"> Import to PHP </button>					
 				</div>				
 				<div class="col-xs-12 col-md-4 block_title">
 					<span>Code for PHP</span>
-					<button> Set PHP program pattern </button>
+					<button class="btn btn-primary"> Set PHP program pattern </button>
 				</div>
 			</div>
 			<!-- ENDS Title area -->
 			
 			<!-- Working area -->
 			<div class="row">
-				<div class="col-xs-12 col-md-4 working_area">
-					<textarea rows="20" placeholder="Paste or Import IP addresses"></textarea>
+				<div class="col-xs-12 col-md-4 working_area imported_ips form-group">
+					<textarea class="form-control" rows="20" placeholder="Paste or Import IP addresses"></textarea>
 				</div>
 				
-				<div class="col-xs-12 col-md-4 working_area">
-					<textarea rows="20" placeholder="List of IPs" disabled></textarea>
-					<div class="block_title">
+				<div class="col-xs-12 col-md-4 working_area sorted_ips form-group">
+					<textarea class="form-control" rows="20" placeholder="List of IPs" disabled></textarea>
+					<div class="block_title form-group">
 						<span>
 							List Name <input type="text" value="in" placeholder="php's script file name">
 						</span>
-						<button> Save </button>
+						<button class="btn btn-primary"> Save </button>
 					</div>
 				</div>
 				
-				<div class="col-xs-12 col-md-4 working_area">
-					<textarea rows="20" placeholder="Generated PHP program" disabled></textarea>
+				<div class="col-xs-12 col-md-4 working_area phpcode_ips form-group">
+					<textarea class="form-control" rows="20" placeholder="Generated PHP program" disabled></textarea>
 					<div class="block_title">
-						<button> Select All Code </button>
+						<button class="btn btn-primary"> Select All Code </button>
 					</div>
 				</div>
 			</div>
