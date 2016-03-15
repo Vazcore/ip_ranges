@@ -1,6 +1,13 @@
-var onImported = function(contents){
-	var ips_display  = $(".working_area.imported_ips textarea");
+var ips_display  = $(".working_area.imported_ips textarea");
+var sorted_ips_display  = $(".working_area.sorted_ips textarea");
+
+var onImported = function(contents){	
 	ips_display.val(contents);
+};
+
+var onSorted = function(resp)
+{
+	sorted_ips_display.val(resp);
 };
 
 $(document).ready(function(){
@@ -16,6 +23,21 @@ $(document).ready(function(){
 		{
 			readSingleFile(file_input[0].files[0], onImported);			
 		}		
+	});
+	
+	$("#start").click(function() {
+		var content = ips_display.val();
+		if (!content.length)
+		{
+			alert("Empty content");
+			return false;
+		}
+		$.ajax({
+			type: "POST",
+			url: "api.php",
+			data: {action:"to_sort", content:content},
+			success: onSorted
+		});
 	});
 	
 });

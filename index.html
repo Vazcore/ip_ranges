@@ -13,9 +13,8 @@
 			<!-- Title area -->
 			<div class="row">
 				<div class="col-xs-12 col-md-4 block_title">					
-					<span>IPs/IPranges to be imported</span>
-					<button id="import_ips" class="btn btn-primary"> Import </button>
-					<input id="importing_file" type="file" class="hide">
+					<span>IPs/IPranges to be imported</span>			
+					<button id="start" class="btn btn-primary"> Import </button>					
 				</div>
 				<div class="col-xs-12 col-md-4 block_title">
 					<span>IPranges List</span>
@@ -32,6 +31,10 @@
 			<div class="row">
 				<div class="col-xs-12 col-md-4 working_area imported_ips form-group">
 					<textarea class="form-control" rows="20" placeholder="Paste or Import IP addresses"></textarea>
+					<div class="block_title">
+						<button id="import_ips" class="btn btn-primary"> Read from file </button>
+						<input id="importing_file" type="file" class="hide">
+					</div>					
 				</div>
 				
 				<div class="col-xs-12 col-md-4 working_area sorted_ips form-group">
