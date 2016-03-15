@@ -1,0 +1,32 @@
+body{
+	margin: 0;
+	padding: 0;
+}
+
+header{
+	height: 50px;
+}
+
+.block_title{
+	padding: 10px;
+}
+
+.block_title span{
+	float: left;
+}
+
+.block_title button{
+	float: right;
+}
+
+.working_area{
+   padding: 10px;
+}
+
+.working_area textarea{	
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+	border: 2px solid black;
+	padding: 10px;
+}

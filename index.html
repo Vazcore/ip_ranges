@@ -2,8 +2,60 @@
 <html>
 	<head>
 		<title>IP Range</title>
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="style/style.css" />
 	</head>
 	
 	<body>
+		
+		<div class="container">
+			<header></header>
+			<!-- Title area -->
+			<div class="row">
+				<div class="col-xs-12 col-md-4 block_title">					
+					<span>IPs/IPranges to be imported</span>
+					<button> Import </button>
+				</div>
+				<div class="col-xs-12 col-md-4 block_title">
+					<span>IPranges List</span>
+					<button> Import to PHP </button>
+				</div>				
+				<div class="col-xs-12 col-md-4 block_title">
+					<span>Code for PHP</span>
+					<button> Set PHP program pattern </button>
+				</div>
+			</div>
+			<!-- ENDS Title area -->
+			
+			<!-- Working area -->
+			<div class="row">
+				<div class="col-xs-12 col-md-4 working_area">
+					<textarea rows="20" placeholder="Paste or Import IP addresses"></textarea>
+				</div>
+				
+				<div class="col-xs-12 col-md-4 working_area">
+					<textarea rows="20" placeholder="List of IPs" disabled></textarea>
+					<div class="block_title">
+						<span>
+							List Name <input type="text" value="in" placeholder="php's script file name">
+						</span>
+						<button> Save </button>
+					</div>
+				</div>
+				
+				<div class="col-xs-12 col-md-4 working_area">
+					<textarea rows="20" placeholder="Generated PHP program" disabled></textarea>
+					<div class="block_title">
+						<button> Select All Code </button>
+					</div>
+				</div>
+			</div>
+			<!-- ENDS Working area -->
+			
+		</div>		
+		
+		<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="scripts/app.js"></script>
 	</body>
 </html>
