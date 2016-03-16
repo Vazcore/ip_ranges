@@ -30,6 +30,36 @@ $(document).ready(function(){
 	var file_input = $("#importing_file");
 	var pattern_modal = $("#php_pattern_modal");
 	
+	$("#save_to_file").click(function(){
+		var fname = $(this).prev().find("input").val();
+		if (fname === undefined || !fname.length)
+		{
+			alert("Empty file name!");
+			return false;
+		}
+		
+		$.ajax({
+			type: "POST",
+			url: "api.php",
+			data: {action:"save_to_file", content:{filename:fname, code:php_code_display.val()}},
+			success: function(resp){
+				//$("#download").click();
+				downloadFile();
+			}
+		});
+	});
+	
+	$("#select_code").click(function(){
+		php_code_display.select();
+		var e = jQuery.Event("keydown");        
+		e.which = 50;
+		e.ctrlKey = true;
+		setTimeout(function() {
+			php_code_display.trigger(e);
+		});
+		
+	});
+	
 	$("#to_php").click(function(){
 		if (!ips || !ips.length)
 		{
@@ -74,6 +104,13 @@ $(document).ready(function(){
 	});
 	
 });
+
+function downloadFile()
+{
+	var filename = sorted_ips_display.parent().find("input").val();
+	$("#download").attr("href", "api.php?action=download_file&filename=" + filename);
+	$("#download").removeClass("hide");	
+}
 
 function prepare_to_php(ips)
 {

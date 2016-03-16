@@ -18,6 +18,10 @@ header{
 .block_title button{
 	float: right;
 }
+.block_title a{
+	margin-top: 10px;
+	float: right;
+}
 
 .working_area{
    padding: 10px;

@@ -1,12 +1,16 @@
 <?php
 
-if (!isset($_POST['action']))
+if (!isset($_POST['action']) && !isset($_GET['action']))
 {
 	echo json_encode(array("status"=>0, "description" => "Unknown request!"));
 	return false;
 }
 
-$action = $_POST['action'];
+if (isset($_POST["action"]))
+	$action = $_POST['action'];
+
+if (isset($_GET["action"]))
+	$action = $_GET['action'];
 
 if (!function_exists($action))
 {
@@ -16,6 +20,52 @@ if (!function_exists($action))
 else
 {
 	$action();
+}
+
+
+function download_file()
+{	
+	if (isset($_GET['filename']))
+	{
+		$filename = $_GET['filename'] . ".php";
+	}
+	else
+	{
+		$filename = "in.php";
+	}
+	if (ob_get_level()) {
+      ob_end_clean();
+    }
+	header("Content-type: application/octet");
+	header("Content-disposition: attachment; filename=".$filename);	
+	readfile("buffer.txt");
+	exit;
+	
+}
+
+function save_to_file()
+{
+	if (!isset($_POST["content"]))
+	{
+		echo json_encode(array("status"=>0, "description" => "Content is required!"));
+		return false;
+	}
+	
+	$content = $_POST["content"];	
+	if (isset($content["filename"]))
+	{		
+		file_put_contents("buffer.txt", $content["code"]);
+		if (!is_dir("files"))
+		{
+			mkdir("files", 0777);
+		}		
+		if (!copy("buffer.txt", "files/" . $content["filename"] . ".php"))
+		{
+			echo json_encode(array("status"=>0, "description" => "Copy failed!"));
+		}
+		
+	}
+	
 }
 
 function to_sort()
