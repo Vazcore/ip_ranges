@@ -64,7 +64,7 @@ function to_sort()
 				$ips_not_in_range[] = $ip;
 			}
 		}
-	}
+	}	
 	
 	if (count($ips) && !count($ranges))
 	{
@@ -72,9 +72,72 @@ function to_sort()
 	}
 	
 	// mix single ips into ranges
+	$merged_ranges = merge_into_ranges($ips_not_in_range);
 	
+	// combine all ips ranges
+	$result_ips = array_merge($ranges, $merged_ranges);
 	
-	echo json_encode(array("status"=>0, "data" => $ips_not_in_range));
+	// final sort
+	function cmp($a, $b)
+	{
+		if ($a[0] == $b[0])
+		{
+			return 0;
+		}
+		return ($a[0] < $b[0]) ? -1 : 1;
+	}
+	usort($result_ips, "cmp");
+	
+	header("Content-type: application/json; charset=utf-8");
+	
+	echo json_encode(array("status"=>0, "data" => $result_ips));
+}
+
+function merge_into_ranges($ips)
+{
+	$ranges = array();
+	$Grouplist='';
+	foreach($ips as $ip){ 
+		   $ip2long=ip2long($ip);
+		   if(is_array($Grouplist))
+		    {
+				$is_group=false;
+				foreach($Grouplist as $Key=>$Range)
+				{
+					$Range=explode("/",$Range);
+					if (($Range[0]-1)<$ip2long and $ip2long<($Range[1]+1))
+					{
+						$is_group=true;
+						continue;
+					}
+					elseif (($Range[0]-1)==$ip2long)
+					{
+						$Grouplist[$Key]=$ip2long.'/'.$Range[1];
+						$is_group=true;
+					}
+					elseif (($Range[1]+1)==$ip2long)
+					{
+						$Grouplist[$Key]=$Range[0].'/'.$ip2long;
+						$is_group=true;
+					}
+				}
+				if (!$is_group)
+				{
+					$Grouplist[]=($ip2long).'/'.($ip2long);
+				}
+		    }
+			else
+			{
+				$Grouplist[]=($ip2long).'/'.($ip2long);
+		    }
+	}
+	
+	foreach($Grouplist as $v)
+	{
+		$r = explode("/",$v);
+		$ranges[] = array(long2ip($r[0]), long2ip($r[1]));
+	}
+	return $ranges;
 }
 
 function is_in_range($ranges, $ip)
@@ -121,6 +184,25 @@ function separate_ranges($items)
 				}
 			}			
 		}
+		elseif (strstr($item, '/') !== false)
+		{
+			$range = explode("/", $item);
+			if (isset($range[0]) && isset($range[1]))
+			{
+				$to = intval(trim($range[1]));								
+				if (filter_var($range[0], FILTER_VALIDATE_IP))
+				{					
+					$from_parts = explode(".", $range[0]);
+					$from_parts[count($from_parts) - 1] = $to;
+					$to_range = implode(".", $from_parts);
+					
+					if (filter_var($to_range, FILTER_VALIDATE_IP))
+					{
+						$ranges[] = $range[0] . "-" . $to_range;
+					}					
+				}
+			}			
+		}
 		else
 		{
 			$item = trim($item);
@@ -130,7 +212,7 @@ function separate_ranges($items)
 			}
 			
 		}
-	}
+	}	
 	return array('ips'=>$ips, 'ranges'=>$ranges);
 }
 
