@@ -69,7 +69,7 @@ function save_to_file()
 }
 
 function to_sort()
-{
+{	
 	if (!isset($_POST["content"]))
 	{
 		echo json_encode(array("status"=>0, "description" => "Content is required!"));
@@ -102,6 +102,9 @@ function to_sort()
 		$ranges = format_ranges($ranges);
 	}
 	
+	// possible merge ranges
+	//$ranges = possible_merge_ranges($ranges);
+		
 	// single ips which are not in any range list yet
 	$ips_not_in_range = array();
 	if (count($ranges) && count($ips))
@@ -143,6 +146,19 @@ function to_sort()
 	echo json_encode(array("status"=>0, "data" => $result_ips));
 }
 
+function possible_merge_ranges($ranges)
+{
+	/*$merged_ranges = array();
+	
+	foreach ($ranges as $k1 => $range)
+	{
+		foreach ($ranges as $k1 => $range)
+		{
+			
+		}
+	}*/
+}
+
 function merge_into_ranges($ips)
 {
 	$ranges = array();
@@ -182,11 +198,15 @@ function merge_into_ranges($ips)
 		    }
 	}
 	
-	foreach($Grouplist as $v)
+	if(is_array($Grouplist))
 	{
-		$r = explode("/",$v);
-		$ranges[] = array(long2ip($r[0]), long2ip($r[1]));
+		foreach($Grouplist as $v)
+		{
+			$r = explode("/",$v);
+			$ranges[] = array(long2ip($r[0]), long2ip($r[1]));
+		}
 	}
+	
 	return $ranges;
 }
 
@@ -239,16 +259,12 @@ function separate_ranges($items)
 			$range = explode("/", $item);
 			if (isset($range[0]) && isset($range[1]))
 			{
-				$to = intval(trim($range[1]));								
 				if (filter_var($range[0], FILTER_VALIDATE_IP))
 				{					
-					$from_parts = explode(".", $range[0]);
-					$from_parts[count($from_parts) - 1] = $to;
-					$to_range = implode(".", $from_parts);
-					
-					if (filter_var($to_range, FILTER_VALIDATE_IP))
+					$mask_range = cidrToRange(trim($item));					
+					if (count($mask_range) && is_array($mask_range))
 					{
-						$ranges[] = $range[0] . "-" . $to_range;
+						$ranges[] = $mask_range[0] . "-" . $mask_range[1];
 					}					
 				}
 			}			
@@ -264,6 +280,14 @@ function separate_ranges($items)
 		}
 	}	
 	return array('ips'=>$ips, 'ranges'=>$ranges);
+}
+
+function cidrToRange($cidr) {
+  $range = array();
+  $cidr = explode('/', $cidr);
+  $range[0] = long2ip((ip2long($cidr[0])) & ((-1 << (32 - (int)$cidr[1]))));
+  $range[1] = long2ip((ip2long($range[0])) + pow(2, (32 - (int)$cidr[1])) - 2);
+  return $range;
 }
 
 ?>
