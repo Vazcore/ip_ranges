@@ -101,9 +101,9 @@ function to_sort()
 		natsort($ranges);
 		$ranges = format_ranges($ranges);
 	}
-	
+		
 	// possible merge ranges
-	//$ranges = possible_merge_ranges($ranges);
+	$ranges = possible_merge_ranges($ranges);	
 		
 	// single ips which are not in any range list yet
 	$ips_not_in_range = array();
@@ -147,16 +147,77 @@ function to_sort()
 }
 
 function possible_merge_ranges($ranges)
-{
-	/*$merged_ranges = array();
+{	
+	$merged_ranges = array();
+	$marked_busy = array();
+	$marked_busy_ids = array();
 	
 	foreach ($ranges as $k1 => $range)
 	{
-		foreach ($ranges as $k1 => $range)
+		if (in_array($k1, $marked_busy_ids))
 		{
-			
+			continue;
 		}
-	}*/
+		foreach ($ranges as $k1_inner => $inner_range)
+		{
+			if (in_array($k1_inner, $marked_busy_ids) || $k1 == $k1_inner)
+			{
+				continue;
+			}
+			if (($bigger_range = in_range_each_other($range, $inner_range)) !== false)
+			{				
+				if (!isset($marked_busy[$k1]))
+				{
+					$marked_busy[$k1] = array();
+				}
+				$merged_ranges[] = $bigger_range;				
+				$marked_busy[$k1][] = $k1_inner;
+				$marked_busy_ids[] = $k1_inner;
+				$marked_busy_ids[] = $k1;
+			}
+		}
+	}
+	
+	foreach ($ranges as $k1 => $range)
+	{
+		if (!in_array($k1, $marked_busy_ids))
+		{
+			$merged_ranges[] = $range;
+		}
+	}
+	
+	return $merged_ranges;
+}
+
+function in_range_each_other($range, $inner_range)
+{
+	$range_ip_down = ip2long($range[0]);
+	$range_ip_up = ip2long($range[1]);
+	
+	$range_ip_inner_down = ip2long($inner_range[0]);
+	$range_ip_inner_up = ip2long($inner_range[1]);
+	
+	// down 1-st in range of 2-nd
+	if ($range_ip_down >= $range_ip_inner_down && $range_ip_down <= $range_ip_inner_up)
+	{
+		// up 1-st in range of 2-nd
+		if ($range_ip_up >= $range_ip_inner_down && $range_ip_up <= $range_ip_inner_up)
+		{
+			return $inner_range;
+		}
+	}
+	
+	// down 2-nd on range of 1-st
+	if ($range_ip_inner_down >= $range_ip_down && $range_ip_inner_down <= $range_ip_up)
+	{
+		// up 2-nd in range of 1-st
+		if ($range_ip_inner_up >= $range_ip_down && $range_ip_inner_up <= $range_ip_up)
+		{			
+			return $range;
+		}
+	}
+	
+	return false;
 }
 
 function merge_into_ranges($ips)
